@@ -53,7 +53,7 @@ class GrammyStack(Stack):
             runtime=_lambda.Runtime.PYTHON_3_14,
             handler="index.handler",
             code=_lambda.Code.from_asset(f"{BACKEND}/pawel/get"),
-            timeout=_lambda.Duration.seconds(10),
+            timeout=Duration.seconds(10),
             memory_size=256
         )
         pawel_resource = base_api.root.add_resource("pawel")
