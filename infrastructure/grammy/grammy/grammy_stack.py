@@ -47,6 +47,25 @@ class GrammyStack(Stack):
             api_key_required=False
         )
 
+        pawel_fn = _lambda.Function(
+            self, "PawelHandler",
+            function_name=f"{PROJECT_NAME}-pawel-get-handler",
+            runtime=_lambda.Runtime.PYTHON_3_14,
+            handler="index.handler",
+            code=_lambda.Code.from_asset(f"{BACKEND}/pawel/get"),
+            timeout=_lambda.Duration.seconds(10),
+            memory_size=256
+        )
+        pawel_resource = base_api.root.add_resource("pawel")
+        pawel_resource.add_method(
+            "GET",
+            apigateway.LambdaIntegration(
+                pawel_fn,
+                proxy=True
+            ),
+            api_key_required=False
+        )
+
         CfnOutput(
             self,
             "ApiUrl",
