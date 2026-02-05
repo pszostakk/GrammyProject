@@ -1,14 +1,14 @@
 from aws_cdk import (
     Stack,
     CfnOutput,
+    Duration,
     aws_lambda as _lambda,
-    aws_apigateway as apigateway,
+    aws_apigateway as apigateway
 )
 from constructs import Construct
-from pathlib import Path
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
-BACKEND = PROJECT_ROOT / "backend"
+PROJECT_ROOT = "../../"
+BACKEND = f"{PROJECT_ROOT}backend"
 PROJECT_NAME = "grammy"
 
 class GrammyStack(Stack):
@@ -34,7 +34,7 @@ class GrammyStack(Stack):
             runtime=_lambda.Runtime.PYTHON_3_14,
             handler="index.handler",
             code=_lambda.Code.from_asset(f"{BACKEND}/health/get"),
-            timeout=_lambda.Duration.seconds(10),
+            timeout=Duration.seconds(10),
             memory_size=256
         )
         health_resource = base_api.root.add_resource("health")
