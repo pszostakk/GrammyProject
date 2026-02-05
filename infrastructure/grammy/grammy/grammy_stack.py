@@ -28,20 +28,20 @@ class GrammyStack(Stack):
             ),
         )
 
-        health_fn = _lambda.Function(
-            self, "HealthHandler",
-            function_name=f"{PROJECT_NAME}-health-get-handler",
+        kacper_fn = _lambda.Function(
+            self, "KacperHandler",
+            function_name=f"{PROJECT_NAME}-kacper-get-handler",
             runtime=_lambda.Runtime.PYTHON_3_14,
             handler="index.handler",
-            code=_lambda.Code.from_asset(f"{BACKEND}/health/get"),
+            code=_lambda.Code.from_asset(f"{BACKEND}/kacper/get"),
             timeout=Duration.seconds(10),
             memory_size=256
         )
-        health_resource = base_api.root.add_resource("health")
-        health_resource.add_method(
+        kacper_resource = base_api.root.add_resource("kacper")
+        kacper_resource.add_method(
             "GET",
             apigateway.LambdaIntegration(
-                health_fn,
+                kacper_fn,
                 proxy=True
             ),
             api_key_required=False
