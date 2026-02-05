@@ -13,8 +13,8 @@ class GrammyStack(Stack):
         hello_fn = _lambda.Function(
             self, "HelloHandler",
             runtime=_lambda.Runtime.PYTHON_3_14,
-            handler="index.pawel",
+            handler="index.handler",
             code=_lambda.Code.from_inline(
-                "def pawel(event, context):\n    return {'statusCode': 200, 'body': 'Hello, World!'}"
+                "def handler(event, context):\n    return {'statusCode': 200, 'body': 'Hello, World!'}"
             ),
         )
