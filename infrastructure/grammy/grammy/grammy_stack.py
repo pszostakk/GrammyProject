@@ -110,6 +110,17 @@ class GrammyStack(Stack):
             self,
             f"{PROJECT_NAME}-base-api",
             rest_api_name=f"{PROJECT_NAME} Base API",
+            default_cors_preflight_options=apigateway.CorsOptions(
+                allow_origins=[
+                    "https://d1ha3xi7so3sx5.cloudfront.net",
+                    "http://localhost:5173"
+                ],
+                allow_methods=apigateway.Cors.ALL_METHODS,
+                allow_headers=[
+                    "Content-Type",
+                    "Authorization",
+                ],
+            ),
             deploy_options=apigateway.StageOptions(
                 stage_name="dev",
                 logging_level=apigateway.MethodLoggingLevel.INFO,
@@ -123,6 +134,8 @@ class GrammyStack(Stack):
         lambda_functions = {}
         for handler_config in HANDLERS:
             fn = create_lambda_function(self, handler_config, PROJECT_NAME)
+            if fn.log_group:
+                fn.log_group.apply_removal_policy(RemovalPolicy.DESTROY)
             lambda_functions[handler_config.name] = fn
         return lambda_functions
 
