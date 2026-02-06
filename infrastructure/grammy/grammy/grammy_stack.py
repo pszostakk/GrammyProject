@@ -1,22 +1,39 @@
 from aws_cdk import (
     Stack,
     CfnOutput,
-    Duration,
-    aws_lambda as _lambda,
     aws_apigateway as apigateway
 )
 from constructs import Construct
+from .config import PROJECT_NAME, HANDLERS, ROUTES
+from .handlers import create_lambda_function
+from .api_routes import create_api_routes, RouteConfig
 
-PROJECT_ROOT = "../../"
-BACKEND = f"{PROJECT_ROOT}backend"
-PROJECT_NAME = "grammy"
 
 class GrammyStack(Stack):
 
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
-        base_api = apigateway.RestApi(
+        # Create API Gateway
+        base_api = self._create_api_gateway()
+
+        # Create Lambda functions
+        lambda_functions = self._create_lambda_functions()
+
+        # Create API routes
+        self._create_routes(base_api, lambda_functions)
+
+        # Output API URL
+        CfnOutput(
+            self,
+            "ApiUrl",
+            value=base_api.url,
+            description="Grammy API URL"
+        )
+
+    def _create_api_gateway(self) -> apigateway.RestApi:
+        """Create and configure API Gateway."""
+        return apigateway.RestApi(
             self,
             f"{PROJECT_NAME}-base-api",
             rest_api_name=f"{PROJECT_NAME} Base API",
@@ -28,47 +45,27 @@ class GrammyStack(Stack):
             ),
         )
 
-        kacper_fn = _lambda.Function(
-            self, "KacperHandler",
-            function_name=f"{PROJECT_NAME}-kacper-get-handler",
-            runtime=_lambda.Runtime.PYTHON_3_14,
-            handler="index.handler",
-            code=_lambda.Code.from_asset(f"{BACKEND}/kacper/get"),
-            timeout=Duration.seconds(10),
-            memory_size=256
-        )
-        kacper_resource = base_api.root.add_resource("kacper")
-        kacper_resource.add_method(
-            "GET",
-            apigateway.LambdaIntegration(
-                kacper_fn,
-                proxy=True
-            ),
-            api_key_required=False
-        )
+    def _create_lambda_functions(self) -> dict:
+        """Create all Lambda functions and return mapping by name."""
+        lambda_functions = {}
+        for handler_config in HANDLERS:
+            fn = create_lambda_function(self, handler_config, PROJECT_NAME)
+            lambda_functions[handler_config.name] = fn
+        return lambda_functions
 
-        pawel_fn = _lambda.Function(
-            self, "PawelHandler",
-            function_name=f"{PROJECT_NAME}-pawel-get-handler",
-            runtime=_lambda.Runtime.PYTHON_3_14,
-            handler="index.handler",
-            code=_lambda.Code.from_asset(f"{BACKEND}/pawel/get"),
-            timeout=Duration.seconds(10),
-            memory_size=256
-        )
-        pawel_resource = base_api.root.add_resource("pawel")
-        pawel_resource.add_method(
-            "GET",
-            apigateway.LambdaIntegration(
-                pawel_fn,
-                proxy=True
-            ),
-            api_key_required=False
-        )
-
-        CfnOutput(
-            self,
-            "ApiUrl",
-            value=base_api.url,
-            description="Grammy API URL"
-        )
+    def _create_routes(
+        self,
+        base_api: apigateway.RestApi,
+        lambda_functions: dict
+    ) -> None:
+        """Create API routes."""
+        routes = [
+            RouteConfig(
+                path=route_def["path"],
+                method=route_def.get("method", "GET"),
+                lambda_function=lambda_functions[route_def["handler"]],
+                api_key_required=route_def.get("api_key_required", False),
+            )
+            for route_def in ROUTES
+        ]
+        create_api_routes(base_api, routes)
