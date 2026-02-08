@@ -1,7 +1,9 @@
 from aws_cdk import (
+    RemovalPolicy,
     Stack,
     CfnOutput,
-    aws_apigateway as apigateway
+    aws_apigateway as apigateway,
+    aws_dynamodb as dynamodb
 )
 from constructs import Construct
 from .config import PROJECT_NAME, HANDLERS, ROUTES
@@ -19,6 +21,12 @@ class GrammyStack(Stack):
 
         # Create Lambda functions
         lambda_functions = self._create_lambda_functions()
+
+        # Create DynamoDB table with read/write permissions for all Lambdas
+        table = self._create_dynamodb_table()
+        for fn in lambda_functions.values():
+            fn.add_environment("TABLE_NAME", table.table_name)
+            table.grant_read_write_data(fn)
 
         # Create API routes
         self._create_routes(base_api, lambda_functions)
@@ -52,6 +60,23 @@ class GrammyStack(Stack):
             fn = create_lambda_function(self, handler_config, PROJECT_NAME)
             lambda_functions[handler_config.name] = fn
         return lambda_functions
+    
+    def _create_dynamodb_table(self) -> dynamodb.Table:
+     return dynamodb.Table(
+        self,
+        "GrammyTable",
+        table_name=f"{PROJECT_NAME}-table",
+        partition_key=dynamodb.Attribute(
+            name="PK",
+            type=dynamodb.AttributeType.STRING
+        ),
+        sort_key=dynamodb.Attribute(
+            name="SK",
+            type=dynamodb.AttributeType.STRING
+        ),
+        #billing_mode=dynamodb.BillingMode.PAY_PER_REQUEST, - to discuss with Jakub
+        #removal_policy=RemovalPolicy.DESTROY - to discuss with Jakub
+    )
 
     def _create_routes(
         self,
