@@ -1,0 +1,18 @@
+{
+    "VERY_IMPORTANT_NOTE": "JEDNOSTKA W TIMESTAMP I SOUND DURATION TO 1/32 NUTY",
+    "projectName": "Epsilon",
+    "projectOwner": "id_01248349067",
+    "public": true,
+    "songList": [
+        "id_8653986533146",
+        "id_9430187"
+    ],
+    "createdAt": "123416",
+    "modifiedAt": "214235",
+    "contributors": [
+        {
+            "userId": "id_3265",
+            "writePermissions": true
+        }
+    ]
+}

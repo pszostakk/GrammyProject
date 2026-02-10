@@ -1,0 +1,51 @@
+[
+    {
+        "songId": "id_8653986533146",
+        "songName": "R U Mine",
+        "tempo": 120,
+        "rhythm": "4/4",
+        "key": "E",
+        "instruments": [
+            {
+                "instrumentId": "id_826598751",
+                "tuneId": "id_32512",
+                "sounds": [
+                    {
+                        "fret": 7,
+                        "string": 0,
+                        "timestamp": 0,
+                        "soundDuration": 4
+                    },                
+                    {
+                        "fret": 5,
+                        "string": 0,
+                        "timestamp" : 4,
+                        "soundDuration": 4
+                    },           
+                    {
+                        "fret": 7,
+                        "string": 0,
+                        "timestamp": 8,
+                        "soundDuration": 4
+                    },                
+                    {
+                        "fret": 5,
+                        "string": 1,
+                        "timestamp": 8,
+                        "soundDuration": 4
+                    }
+                ],
+                "notes": "dograc solowke"
+            }
+
+        ],
+        "notes": "dograc solowke",
+        "files": [
+            {
+                "fileName": "nagranie12111021",
+                "fileLocation": "/projekt/filenameitp",
+                "fileType": "wav"
+            }
+        ]
+    }
+]

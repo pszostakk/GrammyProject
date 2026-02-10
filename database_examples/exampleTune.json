@@ -1,0 +1,14 @@
+{
+    "tuneId": "id_32512",
+    "tuneName": "standard E",
+    "tuneOwnerId": "id_73659036147",
+    "tuneDescription": "example description",
+    "strings": {
+        "string0" : "E",
+        "string1" : "A",
+        "string2" : "D",
+        "string3" : "G",
+        "string4" : "B",
+        "string5" : "e"
+    }
+}

@@ -1,0 +1,30 @@
+[
+    {
+        "instrumentId": "id_289716",
+        "instrumentDisplayName": "Kacper Gitara",
+        "instrumentType": "guitar",
+        "outputFormat": "tab",
+        "notes": ""
+    },
+    {
+        "instrumentId": "id_289717",
+        "instrumentDisplayName": "Kacper Bass",
+        "instrumentType": "bass_guitar",
+        "outputFormat": "tab",
+        "notes": ""
+    },
+    {
+        "instrumentId": "id_289718",
+        "instrumentDisplayName": "Kuba Perkusja",
+        "instrumentType": "drums",
+        "outputFormat": "drum_tabs",
+        "notes": ""
+    },
+    {
+        "instrumentId": "id_289769",
+        "instrumentDisplayName": "Pawel Wokal",
+        "instrumentType": "vocal",
+        "outputFormat": "text",
+        "notes": ""
+    }
+]
