@@ -4,11 +4,11 @@ Routes now support specifying HTTP methods. Each route is a dict with
 `path`, `handler` (the `HandlerConfig.name`) and optional `method`.
 """
 import os
-from typing import List
+from typing import List, Dict
 from .handlers import HandlerConfig
 
 # Project constants
-PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../"))
 BACKEND = os.path.join(PROJECT_ROOT, "backend")
 PROJECT_NAME = "grammy"
 

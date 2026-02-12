@@ -37,5 +37,5 @@ def create_lambda_function(
         handler=config.handler,
         code=_lambda.Code.from_asset(config.code_path),
         timeout=Duration.seconds(config.timeout_seconds),
-        memory_size=config.memory_size,
+        memory_size=config.memory_size
     )
