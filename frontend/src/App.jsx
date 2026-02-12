@@ -1,9 +1,11 @@
 import { useState } from 'react'
+import { Routes, Route } from 'react-router-dom'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+import LoginPage from './pages/LoginPage/LoginPage.jsx'
 
-function App() {
+function Home() {
   const [count, setCount] = useState(0)
   const [response, setResponse] = useState('')
   const [loading, setLoading] = useState(false)
@@ -56,6 +58,15 @@ function App() {
         Click on the Vite and React logos to learn more - Grammy
       </p>
     </>
+  )
+}
+
+function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/loginPage" element={<LoginPage />} />
+    </Routes>
   )
 }
 
