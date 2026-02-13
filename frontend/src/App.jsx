@@ -1,10 +1,27 @@
 import { useState } from 'react'
+import { Routes, Route } from 'react-router-dom'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+import LoginPage from './pages/LoginPage/LoginPage.jsx'
 
-function App() {
+function Home() {
   const [count, setCount] = useState(0)
+  const [response, setResponse] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  const callApi = async (endpoint) => {
+    setLoading(true)
+    setResponse('Loading...')
+    try {
+      const result = await fetch(`https://7vg071hn2m.execute-api.eu-central-1.amazonaws.com/dev/${endpoint}`)
+      const data = await result.json()
+      setResponse(`${endpoint}: ${JSON.stringify(data)}`)
+    } catch (error) {
+      setResponse(`Error calling ${endpoint}: ${error.message}`)
+    }
+    setLoading(false)
+  }
 
   return (
     <>
@@ -25,10 +42,31 @@ function App() {
           Edit <code>src/App.jsx</code> and save to test HMR
         </p>
       </div>
+
+      <div className="card">
+        <h2>API Calls</h2>
+        <button onClick={() => callApi('pawel')} disabled={loading}>
+          Call Pawel API
+        </button>
+        <button onClick={() => callApi('kacper')} disabled={loading}>
+          Call Kacper API
+        </button>
+        {response && <p>{response}</p>}
+      </div>
+
       <p className="read-the-docs">
-        Click on the Vite and React logos to learn more - access test
+        Click on the Vite and React logos to learn more - Grammy
       </p>
     </>
+  )
+}
+
+function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/loginPage" element={<LoginPage />} />
+    </Routes>
   )
 }
 

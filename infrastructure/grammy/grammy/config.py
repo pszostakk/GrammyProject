@@ -9,7 +9,7 @@ from .handlers import HandlerConfig
 
 
 # Project constants
-PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../"))
 BACKEND = os.path.join(PROJECT_ROOT, "backend")
 PROJECT_NAME = "grammy"
 
