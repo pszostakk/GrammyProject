@@ -7,6 +7,7 @@ import os
 from typing import List, Dict
 from .handlers import HandlerConfig
 
+
 # Project constants
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../../"))
 BACKEND = os.path.join(PROJECT_ROOT, "backend")
@@ -29,6 +30,11 @@ HANDLERS: List[HandlerConfig] = [
         function_name="pawel-get-handler",
         code_path=os.path.join(BACKEND, "pawel/get"),
     ),
+    HandlerConfig(
+        name="SongsHandler",
+        function_name="songs-get-handler",
+        code_path=os.path.join(BACKEND, "songs/get"),
+    ),
 ]
 
 # API routes - list of route definitions supporting different HTTP methods
@@ -37,4 +43,5 @@ ROUTES: List[Dict[str, str]] = [
     {"path": "health", "handler": "HealthHandler", "method": "GET"},
     {"path": "kacper", "handler": "KacperHandler", "method": "GET"},
     {"path": "pawel", "handler": "PawelHandler", "method": "GET"},
+    {"path": "songs", "handler": "SongsHandler", "method": "GET"},
 ]
