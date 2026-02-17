@@ -178,7 +178,7 @@ export default function LoginPage() {
 
   return (
     <div className="login-wrapper">
-      <div className={`login-container ${isRegister ? 'right-panel-active' : ''}`}>
+      <div className={`login-container ${isRegister ? 'right-panel-active' : ''} ${mfaStage === 'totpSetup' ? 'mfa-setup-mode' : ''}`}>
 
         {/* ---------------- RIGHT PANEL (FORM SIDE) ---------------- */}
         <div className="login-right">

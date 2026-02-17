@@ -25,6 +25,11 @@ h2{
   overflow: hidden;
   box-shadow: 0 20px 50px rgba(0,0,0,.4);
   display: flex;
+  transition: min-height 0.3s ease-in-out;
+}
+
+.login-container.mfa-setup-mode {
+  min-height: 750px;
 }
 
 .login-left,
@@ -39,6 +44,12 @@ h2{
   align-items: center;
   overflow-y: auto;
   padding: 20px 0;
+  max-height: 100%;
+}
+
+.login-container.mfa-setup-mode .login-left,
+.login-container.mfa-setup-mode .login-right {
+  overflow-y: visible;
 }
 
 .login-left {
