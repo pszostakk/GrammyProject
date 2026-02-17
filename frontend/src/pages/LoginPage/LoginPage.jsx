@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { QRCodeSVG } from 'qrcode.react'
 import {
   loginUser,
+  registerUser,
   confirmChallenge,
   startReset,
   confirmResetFlow,
@@ -13,6 +14,7 @@ export default function LoginPage() {
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [repeatPassword, setRepeatPassword] = useState('')
 
   const [mfaStage, setMfaStage] = useState(null)
   const [mfaCode, setMfaCode] = useState('')
@@ -61,6 +63,25 @@ export default function LoginPage() {
     try {
       const { nextStep } = await loginUser(email, password)
       handleNextStep(nextStep)
+    } catch (err) {
+      alert(err.message)
+    }
+  }
+
+  /* ---------------- REGISTER ---------------- */
+
+  const handleRegister = async (e) => {
+    e.preventDefault()
+    if (password !== repeatPassword) return alert('Passwords do not match')
+    if (!email || !password) return alert('Please fill in all fields')
+
+    try {
+      await registerUser(email, password)
+      alert('Registration successful! Please check your email to confirm.')
+      setEmail('')
+      setPassword('')
+      setRepeatPassword('')
+      setIsRegister(false)
     } catch (err) {
       alert(err.message)
     }
@@ -200,7 +221,7 @@ export default function LoginPage() {
 
           {/* ===== NORMAL LOGIN / REGISTER ===== */}
           {!mfaStage && !resetStage && (
-            <form onSubmit={handleLogin}>
+            <form onSubmit={isRegister ? handleRegister : handleLogin}>
               <h2>{isRegister ? 'REGISTER' : 'LOGIN'}</h2>
 
               <input
@@ -220,6 +241,8 @@ export default function LoginPage() {
                 <input
                   type="password"
                   placeholder="REPEAT PASSWORD"
+                  value={repeatPassword}
+                  onChange={(e) => setRepeatPassword(e.target.value)}
                 />
               )}
 

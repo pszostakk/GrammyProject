@@ -1,5 +1,6 @@
 import {
     signIn,
+    signUp,
     confirmSignIn,
     signOut,
     getCurrentUser,
@@ -15,6 +16,18 @@ import {
   
   export async function loginUser(email, password) {
     return await signIn({ username: email, password })
+  }
+
+  export async function registerUser(email, password) {
+    return await signUp({
+      username: email,
+      password,
+      options: {
+        userAttributes: {
+          email,
+        },
+      },
+    })
   }
   
   export async function confirmChallenge(code) {
