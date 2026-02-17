@@ -52,7 +52,7 @@ export default function LoginPage() {
       case 'CONTINUE_SIGN_IN_WITH_TOTP_SETUP':
         const uri = nextStep.totpSetupDetails.getSetupUri({
           issuer: 'Grammy',
-          label: email,
+          label: `Grammy:${email}`,
         })
         setQrUri(uri)
         setMfaStage('totpSetup')
