@@ -50,12 +50,25 @@ export default function LoginPage() {
         break
 
       case 'CONTINUE_SIGN_IN_WITH_TOTP_SETUP':
-        const uri = nextStep.totpSetupDetails.getSetupUri({
-          issuer: 'Grammy',
-          label: `Grammy:${email}`,
-        })
-        setQrUri(uri)
-        setMfaStage('totpSetup')
+        try {
+          const secret = nextStep.totpSetupDetails.sharedSecret
+          const label = `Grammy:${email}`
+          const issuer = 'Grammy'
+          
+          // Manually construct otpauth URI
+          const uri = `otpauth://totp/${issuer}:${encodeURIComponent(label)}?secret=${secret}&issuer=${issuer}`
+          
+          setQrUri(uri)
+          setMfaStage('totpSetup')
+        } catch (err) {
+          // Fallback to getSetupUri if manual construction fails
+          const uri = nextStep.totpSetupDetails.getSetupUri({
+            issuer: 'Grammy',
+            label: `Grammy:${email}`,
+          })
+          setQrUri(uri)
+          setMfaStage('totpSetup')
+        }
         break
 
       default:
