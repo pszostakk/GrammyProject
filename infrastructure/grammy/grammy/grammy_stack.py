@@ -168,6 +168,10 @@ class GrammyStack(Stack):
                 ),
             ],
             destination_bucket=website_bucket,
+            prune=True,  # Delete files in S3 that aren't in source
+            retain_on_delete=False,  # Delete from S3 when stack is destroyed
+            distribution=distribution,  # Invalidate CloudFront cache on update
+            distribution_paths=["/*"],  # Invalidate all paths
         )
 
         # ───────────── Outputs ─────────────
