@@ -3,9 +3,7 @@ from aws_cdk import (
     Stack,
     CfnOutput,
     aws_apigateway as apigateway,
-    aws_dynamodb as dynamodb
-    RemovalPolicy,
-    aws_apigateway as apigateway,
+    aws_dynamodb as dynamodb,
     aws_s3 as s3,
     aws_cloudfront as cloudfront,
     aws_cloudfront_origins as origins,
