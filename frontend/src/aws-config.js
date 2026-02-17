@@ -16,6 +16,7 @@ const awsconfig = {
       userPoolId: cfg.USER_POOL_ID,
       userPoolClientId: cfg.USER_POOL_CLIENT_ID,
       loginWith: { email: true },
+      region: 'eu-central-1'
     },
   },
 }
