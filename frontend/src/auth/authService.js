@@ -1,0 +1,48 @@
+import {
+    signIn,
+    confirmSignIn,
+    signOut,
+    getCurrentUser,
+    fetchAuthSession,
+    resetPassword,
+    confirmResetPassword,
+  } from 'aws-amplify/auth'
+  
+  export async function getIdToken() {
+    const { tokens } = await fetchAuthSession()
+    return tokens?.idToken?.toString() ?? null
+  }
+  
+  export async function loginUser(email, password) {
+    return await signIn({ username: email, password })
+  }
+  
+  export async function confirmChallenge(code) {
+    return await confirmSignIn({ challengeResponse: code })
+  }
+  
+  export async function logoutUser() {
+    await signOut()
+  }
+  
+  export async function checkSession() {
+    try {
+      await getCurrentUser()
+      return true
+    } catch {
+      return false
+    }
+  }
+  
+  export async function startReset(username) {
+    return await resetPassword({ username })
+  }
+  
+  export async function confirmResetFlow(username, code, newPassword) {
+    return await confirmResetPassword({
+      username,
+      confirmationCode: code,
+      newPassword,
+    })
+  }
+  

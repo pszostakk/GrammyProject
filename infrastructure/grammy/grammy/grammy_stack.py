@@ -2,10 +2,11 @@ from aws_cdk import (
     RemovalPolicy,
     Stack,
     CfnOutput,
-    aws_apigateway as apigateway,
-    aws_dynamodb as dynamodb
     RemovalPolicy,
+    Duration,
+    aws_dynamodb as dynamodb,
     aws_apigateway as apigateway,
+    aws_cognito as cognito,
     aws_s3 as s3,
     aws_cloudfront as cloudfront,
     aws_cloudfront_origins as origins,
@@ -13,6 +14,7 @@ from aws_cdk import (
     aws_iam as iam,
 )
 from constructs import Construct
+import json
 from .config import PROJECT_NAME, HANDLERS, ROUTES
 from .handlers import create_lambda_function
 from .api_routes import create_api_routes, RouteConfig
@@ -23,6 +25,7 @@ class GrammyStack(Stack):
     def __init__(self, scope: Construct, construct_id: str, **kwargs) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
+        # ───────────── Frontend: S3 bucket ─────────────
         website_bucket = s3.Bucket(
             self,
             "FrontendBucket",
@@ -31,6 +34,7 @@ class GrammyStack(Stack):
             block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
         )
 
+        # ───────────── Frontend: CloudFront OAC ─────────────
         oac = cloudfront.CfnOriginAccessControl(
             self,
             "FrontendOAC",
@@ -42,6 +46,7 @@ class GrammyStack(Stack):
             ),
         )
 
+        # ───────────── Frontend: CloudFront Distribution ─────────────
         distribution = cloudfront.CfnDistribution(
             self,
             "FrontendDistribution",
@@ -69,9 +74,22 @@ class GrammyStack(Stack):
                         cookies=cloudfront.CfnDistribution.CookiesProperty(forward="none"),
                     ),
                 ),
+                custom_error_responses=[
+                    cloudfront.CfnDistribution.CustomErrorResponseProperty(
+                        error_code=403,
+                        response_code=200,
+                        response_page_path="/index.html",
+                    ),
+                    cloudfront.CfnDistribution.CustomErrorResponseProperty(
+                        error_code=404,
+                        response_code=200,
+                        response_page_path="/index.html",
+                    ),
+                ],
             ),
         )
 
+        # Allow CloudFront to read from S3 (OAC)
         website_bucket.add_to_resource_policy(
             iam.PolicyStatement(
                 actions=["s3:GetObject"],
@@ -85,33 +103,79 @@ class GrammyStack(Stack):
             )
         )
 
-        s3deploy.BucketDeployment(
-            self,
-            "DeployFrontend",
-            sources=[s3deploy.Source.asset("../../frontend/dist")],
-            destination_bucket=website_bucket,
-        )
-
-        # Create API Gateway
+        # ───────────── API Gateway ─────────────
         base_api = self._create_api_gateway()
 
-        # Create Lambda functions
+        # ───────────── Lambda functions ─────────────
         lambda_functions = self._create_lambda_functions()
 
-        # Create DynamoDB table with read/write permissions for all Lambdas
+        # ───────────── DynamoDB ─────────────
         table = self._create_dynamodb_table()
         for fn in lambda_functions.values():
             fn.add_environment("TABLE_NAME", table.table_name)
             table.grant_read_write_data(fn)
 
-        # Create API routes
-        self._create_routes(base_api, lambda_functions)
+        # ───────────── Cognito User Pool ─────────────
+        user_pool = cognito.UserPool(
+            self,
+            "GrammyUserPool",
+            self_sign_up_enabled=True,
+            sign_in_aliases=cognito.SignInAliases(email=True),
+            auto_verify=cognito.AutoVerifiedAttrs(email=True),
+            account_recovery=cognito.AccountRecovery.EMAIL_ONLY,
+            mfa=cognito.Mfa.REQUIRED,
+            mfa_second_factor=cognito.MfaSecondFactor(sms=False, otp=True),
+            removal_policy=RemovalPolicy.DESTROY,
+        )
 
-        # Outputs
+        user_pool_client = user_pool.add_client(
+            "GrammyAppClient",
+            auth_flows=cognito.AuthFlow(
+                user_srp=True,
+                user_password=True,
+                admin_user_password=True,
+            ),
+            id_token_validity=Duration.hours(1),
+            access_token_validity=Duration.hours(1),
+            refresh_token_validity=Duration.hours(1),
+            enable_token_revocation=True,
+        )
+
+        # ───────────── Cognito Authorizer (child of RestApi) ─────────────
+        authorizer = apigateway.CognitoUserPoolsAuthorizer(
+            base_api,
+            "GrammyAuthorizer",
+            cognito_user_pools=[user_pool],
+            identity_source="method.request.header.Authorization",
+        )
+
+        # ───────────── API Routes (secured) ─────────────
+        self._create_routes(base_api, lambda_functions, authorizer)
+
+        # ───────────── Deploy frontend: dist + runtime config.js ─────────────
+        s3deploy.BucketDeployment(
+            self,
+            "DeployFrontend",
+            sources=[
+                s3deploy.Source.asset("../../frontend/dist"),
+                s3deploy.Source.data(
+                    "config.js",
+                    "window.__GRAMMY_CONFIG__ = " + json.dumps({
+                        "API_URL": base_api.url.rstrip("/"),
+                        "USER_POOL_ID": user_pool.user_pool_id,
+                        "USER_POOL_CLIENT_ID": user_pool_client.user_pool_client_id,
+                    }) + ";",
+                ),
+            ],
+            destination_bucket=website_bucket,
+        )
+
+        # ───────────── Outputs ─────────────
         CfnOutput(self, "ApiUrl", value=base_api.url)
+        CfnOutput(self, "UserPoolId", value=user_pool.user_pool_id)
+        CfnOutput(self, "UserPoolClientId", value=user_pool_client.user_pool_client_id)
         CfnOutput(self, "FrontendUrl", value=f"https://{distribution.attr_domain_name}")
         CfnOutput(self, "FrontendBucketName", value=website_bucket.bucket_name)
-
 
     def _create_api_gateway(self) -> apigateway.RestApi:
         """Create and configure API Gateway."""
@@ -168,7 +232,8 @@ class GrammyStack(Stack):
     def _create_routes(
         self,
         base_api: apigateway.RestApi,
-        lambda_functions: dict
+        lambda_functions: dict,
+        authorizer: apigateway.CognitoUserPoolsAuthorizer,
     ) -> None:
         """Create API routes."""
         routes = [
@@ -177,7 +242,8 @@ class GrammyStack(Stack):
                 method=route_def.get("method", "GET"),
                 lambda_function=lambda_functions[route_def["handler"]],
                 api_key_required=route_def.get("api_key_required", False),
+                auth_required=route_def.get("auth_required", True),
             )
             for route_def in ROUTES
         ]
-        create_api_routes(base_api, routes)
+        create_api_routes(base_api, routes, authorizer=authorizer)

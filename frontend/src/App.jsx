@@ -4,6 +4,8 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 import LoginPage from './pages/LoginPage/LoginPage.jsx'
+import { getIdToken } from './auth/authService.js'
+import ProtectedRoute from './auth/protectedRoute.jsx'
 
 function Home() {
   const [count, setCount] = useState(0)
@@ -11,17 +13,18 @@ function Home() {
   const [loading, setLoading] = useState(false)
 
   const callApi = async (endpoint) => {
-    setLoading(true)
-    setResponse('Loading...')
-    try {
-      const result = await fetch(`https://7vg071hn2m.execute-api.eu-central-1.amazonaws.com/dev/${endpoint}`)
-      const data = await result.json()
-      setResponse(`${endpoint}: ${JSON.stringify(data)}`)
-    } catch (error) {
-      setResponse(`Error calling ${endpoint}: ${error.message}`)
-    }
-    setLoading(false)
+    const token = await getIdToken()
+  
+    const result = await fetch(
+      `${import.meta.env.VITE_API_URL}/${endpoint}`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
   }
+  
 
   return (
     <>
@@ -64,8 +67,24 @@ function Home() {
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
       <Route path="/loginPage" element={<LoginPage />} />
+      <Route
+        path="/"
+        element={
+          <ProtectedRoute>
+            <Home />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/home"
+        element={
+          <ProtectedRoute>
+            <Home />
+          </ProtectedRoute>
+        }
+      />
     </Routes>
   )
 }
