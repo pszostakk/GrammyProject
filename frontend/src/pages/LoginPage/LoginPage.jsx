@@ -3,6 +3,7 @@ import { QRCodeSVG } from 'qrcode.react'
 import {
   loginUser,
   registerUser,
+  confirmSignUp,
   confirmChallenge,
   startReset,
   confirmResetFlow,
@@ -16,9 +17,15 @@ export default function LoginPage() {
   const [password, setPassword] = useState('')
   const [repeatPassword, setRepeatPassword] = useState('')
 
+  // Email verification state
+  const [emailVerificationStage, setEmailVerificationStage] = useState(null)
+  const [verificationEmailCode, setVerificationEmailCode] = useState('')
+
+  // MFA states
   const [mfaStage, setMfaStage] = useState(null)
   const [mfaCode, setMfaCode] = useState('')
   const [qrUri, setQrUri] = useState('')
+  const [deviceName, setDeviceName] = useState('')
 
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
@@ -77,7 +84,23 @@ export default function LoginPage() {
 
     try {
       await registerUser(email, password)
-      alert('Registration successful! Please check your email to confirm.')
+      setEmailVerificationStage('pending')
+      setEmail(email) // Keep email for verification step
+    } catch (err) {
+      alert(err.message)
+    }
+  }
+
+  /* ---------------- EMAIL VERIFICATION ===== */
+
+  const handleEmailVerification = async () => {
+    if (!verificationEmailCode) return alert('Enter verification code')
+
+    try {
+      await confirmSignUp(email, verificationEmailCode)
+      alert('Email verified! You can now login.')
+      setEmailVerificationStage(null)
+      setVerificationEmailCode('')
       setEmail('')
       setPassword('')
       setRepeatPassword('')
@@ -87,7 +110,23 @@ export default function LoginPage() {
     }
   }
 
-  /* ---------------- TOTP ---------------- */
+  /* ---------------- MFA SETUP ===== */
+
+  const handleMfaSetupSubmit = async () => {
+    if (!deviceName) return alert('Please name your device')
+    if (!mfaCode) return alert('Enter the 6-digit code')
+
+    try {
+      const { nextStep } = await confirmChallenge(mfaCode)
+      setDeviceName('')
+      setMfaCode('')
+      handleNextStep(nextStep)
+    } catch (err) {
+      alert(err.message)
+    }
+  }
+
+  /* ---------------- MFA SIGNIN ===== */
 
   const handleTotpSubmit = async () => {
     try {
@@ -127,6 +166,11 @@ export default function LoginPage() {
       await confirmResetFlow(email, verificationCode, newPassword)
       alert('Password reset successful')
       setResetStage(false)
+      setEmail('')
+      setPassword('')
+      setNewPassword('')
+      setConfirmPassword('')
+      setVerificationCode('')
     } catch (err) {
       alert(err.message)
     }
@@ -139,32 +183,86 @@ export default function LoginPage() {
         {/* ---------------- RIGHT PANEL (FORM SIDE) ---------------- */}
         <div className="login-right">
 
-          {/* ===== MFA SETUP ===== */}
-          {mfaStage === 'totpSetup' && (
+          {/* ===== EMAIL VERIFICATION VIEW ===== */}
+          {emailVerificationStage === 'pending' && (
             <div className="auth-block">
-              <h2>Enable MFA</h2>
-              <QRCodeSVG value={qrUri} />
+              <h2>Verify Email</h2>
+              <p>We sent a verification code to <strong>{email}</strong></p>
+              <p className="sub-text">Check your email (and spam folder) for the code.</p>
               <input
-                placeholder="6 digit code"
-                value={mfaCode}
-                onChange={(e) => setMfaCode(e.target.value)}
+                placeholder="Enter verification code"
+                value={verificationEmailCode}
+                onChange={(e) => setVerificationEmailCode(e.target.value)}
               />
-              <button className="login-button" onClick={handleTotpSubmit}>
-                Verify
+              <button 
+                className="login-button" 
+                onClick={handleEmailVerification}
+              >
+                Verify Email
+              </button>
+              <button 
+                type="button"
+                className="back-button"
+                onClick={() => {
+                  setEmailVerificationStage(null)
+                  setVerificationEmailCode('')
+                  setEmail('')
+                  setPassword('')
+                  setRepeatPassword('')
+                }}
+              >
+                Back to Register
               </button>
             </div>
           )}
 
-          {/* ===== MFA SIGNIN ===== */}
+          {/* ===== MFA SETUP VIEW ===== */}
+          {mfaStage === 'totpSetup' && (
+            <div className="auth-block">
+              <h2>Secure Your Account</h2>
+              <p>Scan this QR code with your authenticator app:</p>
+              <div className="qr-container">
+                <QRCodeSVG value={qrUri} size={256} level="H" />
+              </div>
+              <p className="sub-text">Popular apps: Google Authenticator, Authy, Microsoft Authenticator</p>
+              
+              <input
+                placeholder="Device name (e.g., My iPhone)"
+                value={deviceName}
+                onChange={(e) => setDeviceName(e.target.value)}
+              />
+              
+              <input
+                placeholder="6-digit code from app"
+                value={mfaCode}
+                maxLength="6"
+                onChange={(e) => setMfaCode(e.target.value.replace(/\D/g, ''))}
+              />
+              
+              <button 
+                className="login-button" 
+                onClick={handleMfaSetupSubmit}
+              >
+                Verify & Enable MFA
+              </button>
+            </div>
+          )}
+
+          {/* ===== MFA SIGNIN VIEW ===== */}
           {mfaStage === 'signinTotp' && (
             <div className="auth-block">
               <h2>Enter MFA Code</h2>
+              <p>Open your authenticator app and enter the 6-digit code.</p>
               <input
-                placeholder="6 digit code"
+                placeholder="6-digit code"
                 value={mfaCode}
-                onChange={(e) => setMfaCode(e.target.value)}
+                maxLength="6"
+                onChange={(e) => setMfaCode(e.target.value.replace(/\D/g, ''))}
               />
-              <button className="login-button" onClick={handleTotpSubmit}>
+              <button 
+                className="login-button" 
+                onClick={handleTotpSubmit}
+              >
                 Verify
               </button>
             </div>
@@ -196,6 +294,7 @@ export default function LoginPage() {
           {resetStage && (
             <div className="auth-block">
               <h2>Reset Password</h2>
+              <p>Enter the verification code sent to your email.</p>
               <input
                 placeholder="Verification code"
                 value={verificationCode}
@@ -216,11 +315,23 @@ export default function LoginPage() {
               <button className="login-button" onClick={handleResetConfirm}>
                 Confirm
               </button>
+              <button 
+                type="button"
+                className="back-button"
+                onClick={() => {
+                  setResetStage(false)
+                  setVerificationCode('')
+                  setNewPassword('')
+                  setConfirmPassword('')
+                }}
+              >
+                Back
+              </button>
             </div>
           )}
 
           {/* ===== NORMAL LOGIN / REGISTER ===== */}
-          {!mfaStage && !resetStage && (
+          {!mfaStage && !resetStage && !emailVerificationStage && (
             <form onSubmit={isRegister ? handleRegister : handleLogin}>
               <h2>{isRegister ? 'REGISTER' : 'LOGIN'}</h2>
 

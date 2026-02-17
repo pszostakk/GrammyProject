@@ -1,6 +1,7 @@
 import {
     signIn,
     signUp,
+    confirmSignUp as awsConfirmSignUp,
     confirmSignIn,
     signOut,
     getCurrentUser,
@@ -28,6 +29,10 @@ import {
         },
       },
     })
+  }
+
+  export async function confirmSignUp(username, code) {
+    return await awsConfirmSignUp({ username, confirmationCode: code })
   }
   
   export async function confirmChallenge(code) {
