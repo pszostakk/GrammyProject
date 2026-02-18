@@ -1,0 +1,37 @@
+repos:
+  # ==========================
+  # PYTHON - RUFF (Backend)
+  # ==========================
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.4.4
+    hooks:
+      - id: ruff
+        name: ruff-check
+        args: ["--fix"]
+        files: ^backend/.*\.py$
+
+      - id: ruff-format
+        name: ruff-format
+        files: ^backend/.*\.py$
+
+  # ==========================
+  # FRONTEND - ESLINT
+  # ==========================
+  - repo: local
+    hooks:
+      - id: eslint
+        name: eslint
+        entry: npx eslint
+        language: system
+        types: [javascript, jsx, ts, tsx]
+        files: ^frontend/
+
+      # ==========================
+      # FRONTEND - PRETTIER
+      # ==========================
+      - id: prettier
+        name: prettier
+        entry: npx prettier --write
+        language: system
+        types: [javascript, jsx, ts, tsx, css, json, markdown]
+        files: ^frontend/

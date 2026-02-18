@@ -1,5 +1,2 @@
 def handler(event, context):
-    return {
-        "statusCode": 200,
-        "body": "Song updated sucessfully"
-    }
+    return {"statusCode": 200, "body": "Song updated sucessfully"}
