@@ -49,7 +49,7 @@ cd infrastructure/grammy
 if [ "$NO_PROMPT" = true ]; then
     cdk deploy --require-approval=never
 else
-    cdk deploy
+    cdk deploy DataStack BackendStack FrontendStack
 fi
 
 cd ../..

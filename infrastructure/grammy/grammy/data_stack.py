@@ -43,14 +43,14 @@ class DataStack(Stack):
             bucket_name=f"{PROJECT_NAME}-backup-{self.account}",
             removal_policy=RemovalPolicy.DESTROY,
             auto_delete_objects=True,
-            versioning_enabled=True,  # Enable versioning for safety
+            versioned=True,  # Enable versioning for safety
             block_public_access=s3.BlockPublicAccess.BLOCK_ALL,
             lifecycle_rules=[
                 s3.LifecycleRule(
                     transitions=[
                         s3.Transition(
                             transition_after=Duration.days(30),
-                            storage_class=s3.StorageClass.STANDARD_IA,
+                            storage_class=s3.StorageClass.INFREQUENT_ACCESS,
                         ),
                         s3.Transition(
                             transition_after=Duration.days(90),

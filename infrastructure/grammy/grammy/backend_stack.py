@@ -134,17 +134,18 @@ class BackendStack(Stack):
             
             # Grant DynamoDB access
             fn.add_environment("TABLE_NAME", self.table_name)
-            iam.Grant(
-                principal=fn.role,
-                actions=[
-                    "dynamodb:GetItem",
-                    "dynamodb:PutItem",
-                    "dynamodb:UpdateItem",
-                    "dynamodb:DeleteItem",
-                    "dynamodb:Query",
-                    "dynamodb:Scan",
-                ],
-                resources=[self.table_arn],
+            fn.add_to_role_policy(
+                iam.PolicyStatement(
+                    actions=[
+                        "dynamodb:GetItem",
+                        "dynamodb:PutItem",
+                        "dynamodb:UpdateItem",
+                        "dynamodb:DeleteItem",
+                        "dynamodb:Query",
+                        "dynamodb:Scan",
+                    ],
+                    resources=[self.table_arn],
+                )
             )
             
             lambda_functions[handler_config.name] = fn
