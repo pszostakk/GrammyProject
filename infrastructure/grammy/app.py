@@ -3,26 +3,33 @@ import os
 
 import aws_cdk as cdk
 
-from grammy.grammy_stack import GrammyStack
+from grammy.data_stack import DataStack
+from grammy.backend_stack import BackendStack
+from grammy.frontend_stack import FrontendStack
 
 
 app = cdk.App()
-GrammyStack(app, "GrammyStack",
-    # If you don't specify 'env', this stack will be environment-agnostic.
-    # Account/Region-dependent features and context lookups will not work,
-    # but a single synthesized template can be deployed anywhere.
 
-    # Uncomment the next line to specialize this stack for the AWS Account
-    # and Region that are implied by the current CLI configuration.
+# Deploy stacks in order with cross-stack dependencies
+data_stack = DataStack(app, "GrammyDataStack")
 
-    #env=cdk.Environment(account=os.getenv('CDK_DEFAULT_ACCOUNT'), region=os.getenv('CDK_DEFAULT_REGION')),
+backend_stack = BackendStack(
+    app,
+    "GrammyBackendStack",
+    table_name=data_stack.table.table_name,
+    table_arn=data_stack.table.table_arn,
+)
 
-    # Uncomment the next line if you know exactly what Account and Region you
-    # want to deploy the stack to. */
+frontend_stack = FrontendStack(
+    app,
+    "GrammyFrontendStack",
+    api_url=backend_stack.base_api.url,
+    user_pool_id=backend_stack.user_pool.user_pool_id,
+    user_pool_client_id=backend_stack.user_pool_client.user_pool_client_id,
+)
 
-    #env=cdk.Environment(account='123456789012', region='us-east-1'),
-
-    # For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html
-    )
+# Add explicit dependencies
+backend_stack.add_dependency(data_stack)
+frontend_stack.add_dependency(backend_stack)
 
 app.synth()

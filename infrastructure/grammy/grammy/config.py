@@ -13,6 +13,9 @@ PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..
 BACKEND = os.path.join(PROJECT_ROOT, "backend")
 PROJECT_NAME = "grammy"
 
+# CloudFront domain for CORS - update if your distribution domain changes
+CLOUDFRONT_DOMAIN = "d1ha3xi7so3sx5.cloudfront.net"
+
 # Handler configurations
 HANDLERS: List[HandlerConfig] = [
     HandlerConfig(
@@ -46,9 +49,14 @@ HANDLERS: List[HandlerConfig] = [
         code_path=os.path.join(BACKEND, "projects/delete"),
     ),
     HandlerConfig(
-        name="SongsHandler",
+        name="SongsGetHandler",
         function_name="songs-get-handler",
         code_path=os.path.join(BACKEND, "songs/get")
+    ),
+    HandlerConfig(
+        name="SongsGetIdHandler",
+        function_name="songs-get-id-handler",
+        code_path=os.path.join(BACKEND, "songs/get_id"),
     ),
     HandlerConfig(
         name="SongsPostHandler",
@@ -126,7 +134,7 @@ ROUTES: List[Dict[str, str]] = [
     {"path": "projects", "handler": "ProjectsPostHandler", "method": "POST"},
     {"path": "projects", "handler": "ProjectsPutHandler", "method": "PUT"},
     {"path": "projects", "handler": "ProjectsDeleteHandler", "method": "DELETE"},
-    {"path": "songs", "handler": "SongsHandler", "method": "GET"},
+    {"path": "songs", "handler": "SongsGetHandler", "method": "GET"},
     {"path": "songs/{id}", "handler": "SongsGetIdHandler", "method": "GET"},
     {"path": "songs", "handler": "SongsPostHandler", "method": "POST"},
     {"path": "songs", "handler": "SongsPutHandler", "method": "PUT"},
