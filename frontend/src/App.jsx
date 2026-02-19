@@ -16,7 +16,7 @@ function Home() {
     const token = await getIdToken()
   
     const result = await fetch(
-      `${import.meta.env.VITE_API_URL}/${endpoint}`,
+      `${import.meta.env.GRAMMY_API_URL}/${endpoint}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -67,18 +67,14 @@ function Home() {
 function App() {
   return (
     <Routes>
-      <Route path="/loginPage" element={<LoginPage />} />
+      <Route 
+        path="/loginPage" 
+        element={
+          <LoginPage />
+        } 
+      />
       <Route
         path="/"
-        element={
-          <ProtectedRoute>
-            <Home />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/home"
         element={
           <ProtectedRoute>
             <Home />

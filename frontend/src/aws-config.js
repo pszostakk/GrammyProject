@@ -1,10 +1,10 @@
 import { Amplify } from 'aws-amplify'
 
+// TODO: Handle runtimeCfg when there is no window.__GRAMMY_CONFIG__ (e.g. during tests)
 const runtimeCfg = window.__GRAMMY_CONFIG__ ?? {}
 
-// fallback na .env (Vite) – działa lokalnie
 const cfg = {
-  API_URL: runtimeCfg.API_URL ?? import.meta.env.VITE_API_URL,
+  API_URL: runtimeCfg.API_URL ?? import.meta.env.GRAMMY_API_URL,
   USER_POOL_ID: runtimeCfg.USER_POOL_ID ?? import.meta.env.VITE_USER_POOL_ID,
   USER_POOL_CLIENT_ID:
     runtimeCfg.USER_POOL_CLIENT_ID ?? import.meta.env.VITE_USER_POOL_CLIENT_ID,
