@@ -1,5 +1,2 @@
 def handler(event, context):
-    return {
-        "statusCode": 200,
-        "body": "Deleted instrument successfully"
-    }
+    return {"statusCode": 200, "body": "Deleted instrument successfully"}
