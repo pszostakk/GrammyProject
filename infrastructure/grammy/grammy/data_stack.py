@@ -21,8 +21,8 @@ class DataStack(Stack):
         # ───────────── DynamoDB Table with PITR ─────────────
         self.table = dynamodb.Table(
             self,
-            f"{PROJECT_NAME}-table",
-            table_name=f"{PROJECT_NAME}-table",
+            f"{PROJECT_NAME}-table-test",
+            table_name=f"{PROJECT_NAME}-table-test",
             partition_key=dynamodb.Attribute(
                 name="PK",
                 type=dynamodb.AttributeType.STRING
