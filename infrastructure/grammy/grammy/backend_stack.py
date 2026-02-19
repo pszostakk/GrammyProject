@@ -1,4 +1,4 @@
-"""Backend Stack - Lambda, API Gateway, Cognito, IAM, EventBridge"""
+"""Backend Stack - Lambda, API Gateway, Cognito, IAM"""
 from aws_cdk import (
     Stack,
     CfnOutput,
@@ -7,7 +7,6 @@ from aws_cdk import (
     aws_lambda as _lambda,
     aws_apigateway as apigateway,
     aws_cognito as cognito,
-    aws_events as events,
     aws_iam as iam,
 )
 from constructs import Construct
@@ -17,7 +16,7 @@ from .api_routes import create_api_routes, RouteConfig
 
 
 class BackendStack(Stack):
-    """Stack for backend resources: Lambda, API Gateway, Cognito, EventBridge."""
+    """Stack for backend resources: Lambda, API Gateway, Cognito."""
 
     def __init__(
         self,
@@ -74,9 +73,6 @@ class BackendStack(Stack):
 
         # ───────────── API Routes ─────────────
         self._create_routes(self.base_api, self.lambda_functions, self.authorizer)
-
-        # ───────────── EventBridge Rule ─────────────
-        self._create_eventbridge_rule()
 
         # ───────────── Outputs ─────────────
         CfnOutput(
@@ -168,14 +164,3 @@ class BackendStack(Stack):
             for route_def in ROUTES
         ]
         create_api_routes(base_api, routes, authorizer=authorizer)
-
-    def _create_eventbridge_rule(self) -> None:
-        """Create EventBridge rule for backend events."""
-        rule = events.Rule(
-            self,
-            "GrammyBackendRule",
-            description="Rule for Grammy backend events",
-            enabled=True,
-        )
-        # Add specific event patterns as needed
-        # Example: rule.add_event_pattern(source=["grammy"])
