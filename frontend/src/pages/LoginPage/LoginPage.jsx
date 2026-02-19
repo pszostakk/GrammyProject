@@ -26,6 +26,7 @@ export default function LoginPage() {
   const [mfaCode, setMfaCode] = useState('')
   const [qrUri, setQrUri] = useState('')
   const [deviceName, setDeviceName] = useState('')
+  const [rememberDevice, setRememberDevice] = useState(false)
 
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
@@ -130,9 +131,10 @@ export default function LoginPage() {
     if (!mfaCode) return alert('Enter the 6-digit code')
 
     try {
-      const { nextStep } = await confirmChallenge(mfaCode)
+      const { nextStep } = await confirmChallenge(mfaCode, rememberDevice)
       setDeviceName('')
       setMfaCode('')
+      setRememberDevice(false)
       handleNextStep(nextStep)
     } catch (err) {
       alert(err.message)
@@ -143,8 +145,9 @@ export default function LoginPage() {
 
   const handleTotpSubmit = async () => {
     try {
-      const { nextStep } = await confirmChallenge(mfaCode)
+      const { nextStep } = await confirmChallenge(mfaCode, rememberDevice)
       setMfaCode('')
+      setRememberDevice(false)
       handleNextStep(nextStep)
     } catch (err) {
       alert(err.message)
@@ -252,6 +255,15 @@ export default function LoginPage() {
                 onChange={(e) => setMfaCode(e.target.value.replace(/\D/g, ''))}
               />
               
+              <label className="remember-device">
+                <input
+                  type="checkbox"
+                  checked={rememberDevice}
+                  onChange={(e) => setRememberDevice(e.target.checked)}
+                />
+                <span>Remember this device for 30 days</span>
+              </label>
+              
               <button 
                 className="login-button" 
                 onClick={handleMfaSetupSubmit}
@@ -272,6 +284,14 @@ export default function LoginPage() {
                 maxLength="6"
                 onChange={(e) => setMfaCode(e.target.value.replace(/\D/g, ''))}
               />
+              <label className="remember-device">
+                <input
+                  type="checkbox"
+                  checked={rememberDevice}
+                  onChange={(e) => setRememberDevice(e.target.checked)}
+                />
+                <span>Remember this device for 30 days</span>
+              </label>
               <button 
                 className="login-button" 
                 onClick={handleTotpSubmit}

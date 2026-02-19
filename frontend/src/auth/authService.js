@@ -35,8 +35,9 @@ import {
     return await awsConfirmSignUp({ username, confirmationCode: code })
   }
   
-  export async function confirmChallenge(code) {
-    return await confirmSignIn({ challengeResponse: code })
+  export async function confirmChallenge(code, rememberDevice = false) {
+    const options = rememberDevice ? { userAttributes: { 'device:trusted': 'true' } } : {}
+    return await confirmSignIn({ challengeResponse: code, options })
   }
   
   export async function logoutUser() {

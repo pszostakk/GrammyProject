@@ -13,6 +13,9 @@ PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../..
 BACKEND = os.path.join(PROJECT_ROOT, "backend")
 PROJECT_NAME = "grammy"
 
+# CloudFront domain for CORS - update if your distribution domain changes
+CLOUDFRONT_DOMAIN = "d1ha3xi7so3sx5.cloudfront.net"
+
 # Handler configurations
 HANDLERS: List[HandlerConfig] = [
     HandlerConfig(

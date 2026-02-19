@@ -204,3 +204,32 @@ h2{
   outline: none;
   background: #d6d6d6;
 }
+
+/* ===== REMEMBER DEVICE ===== */
+
+.remember-device {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 10px 0 15px 0;
+  cursor: pointer;
+  user-select: none;
+  font-size: 14px;
+  color: #666;
+}
+
+.remember-device input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #26b5a3;
+}
+
+.remember-device span {
+  cursor: pointer;
+}
+
+.remember-device:hover span {
+  color: #26b5a3;
+}
