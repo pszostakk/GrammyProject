@@ -14,7 +14,7 @@ BACKEND = os.path.join(PROJECT_ROOT, "backend")
 PROJECT_NAME = "grammy"
 
 # CloudFront domain for CORS - update if your distribution domain changes
-CLOUDFRONT_DOMAIN = "d1ha3xi7so3sx5.cloudfront.net"
+CLOUDFRONT_DOMAIN = "d3cfmp200ge6w8.cloudfront.net"
 
 # Handler configurations
 HANDLERS: List[HandlerConfig] = [
