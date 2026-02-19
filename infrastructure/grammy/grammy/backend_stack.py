@@ -79,7 +79,6 @@ class BackendStack(Stack):
         self._create_eventbridge_rule()
 
         # ───────────── Outputs ─────────────
-        CfnOutput(self, "ApiUrl", value=self.base_api.url)
         CfnOutput(
             self,
             "UserPoolId",
