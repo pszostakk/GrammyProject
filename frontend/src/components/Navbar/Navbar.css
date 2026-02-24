@@ -1,0 +1,256 @@
+.navbar {
+  width: 260px;
+  height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 100;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+  transition: width 0.3s ease;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.navbar.collapsed {
+  width: 80px;
+}
+
+/* Toggle Button */
+.toggle-btn {
+  align-self: flex-end;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: #fff;
+  font-size: 18px;
+  padding: 12px 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-right: 4px;
+}
+
+.toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Navigation Menu */
+.nav-menu {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px 8px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  justify-content: flex-start;
+}
+
+.nav-item:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateX(4px);
+}
+
+.nav-item:active {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateX(2px);
+}
+
+.nav-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+  min-width: 24px;
+  text-align: center;
+}
+
+.nav-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.navbar.collapsed .nav-label {
+  display: none;
+}
+
+.navbar.collapsed .nav-item {
+  justify-content: center;
+  padding: 12px 0;
+}
+
+/* Account Button */
+.account-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.account-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.account-arrow {
+  font-size: 12px;
+  margin-left: auto;
+}
+
+.navbar.collapsed .account-arrow {
+  display: none;
+}
+
+/* Account Menu Dropdown */
+.account-menu {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  margin-top: 4px;
+  overflow: hidden;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Logout Button */
+.logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  width: 100%;
+  transition: all 0.3s ease;
+  justify-content: flex-start;
+}
+
+.logout-btn:hover {
+  background: rgba(255, 100, 100, 0.3);
+}
+
+.navbar.collapsed .logout-btn {
+  justify-content: center;
+  padding: 12px 0;
+}
+
+/* Bottom Section */
+.navbar-bottom {
+  padding: 12px 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Scrollbar Styling */
+.navbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.navbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.navbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 3px;
+}
+
+.navbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .navbar {
+    width: 80px;
+  }
+
+  .navbar.collapsed {
+    width: 80px;
+  }
+
+  .brand-text,
+  .nav-label {
+    display: none;
+  }
+
+  .nav-item {
+    justify-content: center;
+    padding: 12px 0;
+  }
+
+  .toggle-btn {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar {
+    width: 70px;
+    height: auto;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    flex-direction: row;
+    z-index: 100;
+  }
+
+  .navbar-brand {
+    display: none;
+  }
+
+  .nav-menu {
+    flex-direction: row;
+    gap: 0;
+  }
+
+  .nav-item {
+    flex: 1;
+    padding: 8px;
+    gap: 0;
+  }
+
+  .navbar-bottom {
+    display: none;
+  }
+}
