@@ -37,7 +37,7 @@ docker build -t grammy .
 
 # Step 2: Run container and build frontend
 echo -e "\n${YELLOW}🏗️  Running frontend build in Docker...${NC}"
-FRONTEND_PATH="$(pwd)"
+FRONTEND_PATH=$(pwd -W)
 docker run --rm -v "${FRONTEND_PATH}/dist:/out" grammy sh -c "npm run build && cp -r dist/* /out"
 echo -e "${GREEN}✅ Frontend built successfully${NC}"
 cd ..

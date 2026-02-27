@@ -36,6 +36,20 @@ class DataStack(Stack):
             removal_policy=RemovalPolicy.DESTROY,  # For development
         )
 
+         # ───────────── GSI 1: OwnerIndex ─────────────
+        self.table.add_global_secondary_index(
+            index_name="OwnerIndex",
+            partition_key=dynamodb.Attribute(
+                name="ownerId",
+                type=dynamodb.AttributeType.STRING,
+            ),
+            sort_key=dynamodb.Attribute(
+                name="createdAt",
+                type=dynamodb.AttributeType.STRING,
+            ),
+            projection_type=dynamodb.ProjectionType.ALL,
+        )
+
         # ───────────── S3 Backup Bucket ─────────────
         self.backup_bucket = s3.Bucket(
             self,
