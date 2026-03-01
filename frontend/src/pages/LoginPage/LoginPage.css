@@ -18,7 +18,7 @@ h2{
 .login-container {
   position: relative;
   width: 900px;
-  min-height: 500px;
+  min-height: 520px;
   max-height: 90vh;
   background: white;
   border-radius: 20px;
@@ -26,10 +26,6 @@ h2{
   box-shadow: 0 20px 50px rgba(0,0,0,.4);
   display: flex;
   transition: min-height 0.3s ease-in-out;
-}
-
-.login-container.mfa-setup-mode {
-  min-height: 750px;
 }
 
 .login-left,
@@ -42,14 +38,9 @@ h2{
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow-y: auto;
+  overflow: hidden;
   padding: 20px 0;
   max-height: 100%;
-}
-
-.login-container.mfa-setup-mode .login-left,
-.login-container.mfa-setup-mode .login-right {
-  overflow-y: visible;
 }
 
 .login-left {
@@ -88,6 +79,7 @@ h2{
   margin-bottom: 15px;
   border: none;
   background: #e6e6e6;
+  color: #000;
   border-radius: 8px;
 }
 
@@ -142,7 +134,7 @@ h2{
   flex-direction: column;
   text-align: center;
   min-height: fit-content;
-  gap: 10px;
+  gap: 6px;
 }
 
 .auth-block h2 {
@@ -167,11 +159,13 @@ h2{
 .qr-container {
   display: flex;
   justify-content: center;
-  margin: 15px 0;
-  padding: 15px;
+  align-items: center;
+  margin: 6px auto;
+  padding: 6px;
   background: white;
-  border-radius: 10px;
-  width: 100%;
+  border-radius: 12px;
+  width: 160px;
+  aspect-ratio: 1 / 1;
   box-sizing: border-box;
 }
 
@@ -232,4 +226,65 @@ h2{
 
 .remember-device:hover span {
   color: #26b5a3;
+}
+
+.mfa-setup-mode .auth-block {
+  margin-top: 10px;
+  gap: 6px;
+  justify-content: flex-start;
+  transform: translateY(-20px);
+}
+
+.mfa-setup-mode .auth-block h2 {
+  font-size: 20px;
+  margin-bottom: 6px;
+  margin-top: 0;
+}
+
+.mfa-setup-mode .auth-block p {
+  font-size: 12px;
+  margin: 2px 0 6px 0;
+}
+
+.mfa-setup-mode .auth-block input {
+  padding: 8px;
+  margin-bottom: 6px;
+}
+
+.mfa-setup-mode .login-button {
+  padding: 10px;
+}
+
+.mfa-setup-mode .qr-container {
+  margin: 4px auto;
+  padding: 6px;
+  width: 170px;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: white;
+  border-radius: 12px;
+  box-sizing: border-box;
+}
+
+.mfa-layout {
+  display: flex;
+  gap: 30px;
+  align-items: center;
+  width: 85%;
+}
+
+.mfa-qr {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+
+.mfa-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
 }

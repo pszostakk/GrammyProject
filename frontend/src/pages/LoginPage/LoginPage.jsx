@@ -238,7 +238,7 @@ export default function LoginPage() {
               <h2>Secure Your Account</h2>
               <p>Scan this QR code with your authenticator app:</p>
               <div className="qr-container">
-                <QRCodeSVG value={qrUri} size={256} level="H" />
+                <QRCodeSVG value={qrUri} size={160} level="M" />
               </div>
               <p className="sub-text">Popular apps: Google Authenticator, Authy, Microsoft Authenticator</p>
               
@@ -290,7 +290,7 @@ export default function LoginPage() {
                   checked={rememberDevice}
                   onChange={(e) => setRememberDevice(e.target.checked)}
                 />
-                <span>Remember this device for 30 days</span>
+                <span style={{marginTop: '-13px'}}>Remember this device for 30 days</span>
               </label>
               <button 
                 className="login-button" 
@@ -300,7 +300,6 @@ export default function LoginPage() {
               </button>
             </div>
           )}
-
           {/* ===== NEW PASSWORD ===== */}
           {mfaStage === 'newPassword' && (
             <div className="auth-block">
@@ -417,11 +416,30 @@ export default function LoginPage() {
               : "Don't have an account?"}
           </p>
           <button
-            className="toggle-button"
-            onClick={() => setIsRegister(!isRegister)}
-          >
-            {isRegister ? 'LOGIN' : 'REGISTER'}
-          </button>
+          className="toggle-button"
+          onClick={() => {
+            setIsRegister(!isRegister)
+            setMfaStage(null)
+            setQrUri('')
+            setMfaCode('')
+            setDeviceName('')
+            setRememberDevice(false)
+
+            setResetStage(false)
+            setVerificationCode('')
+
+            setEmailVerificationStage(null)
+            setVerificationEmailCode('')
+
+            setEmail('')
+            setPassword('')
+            setRepeatPassword('')
+            setNewPassword('')
+            setConfirmPassword('')
+          }}
+        >
+          {isRegister ? 'LOGIN' : 'REGISTER'}
+        </button>
         </div>
 
       </div>
