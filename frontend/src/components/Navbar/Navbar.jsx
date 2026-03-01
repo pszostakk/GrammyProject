@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { logoutUser } from '../../auth/authService';
 import './Navbar.css';
 
 const Navbar = () => {
+  const navigate = useNavigate();
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [accountMenuOpen, setAccountMenuOpen] = useState(false);
 
@@ -13,14 +16,23 @@ const Navbar = () => {
     setAccountMenuOpen(!accountMenuOpen);
   };
 
+  const handleLogout = async () => {
+    try {
+      await logoutUser();
+      navigate('/loginPage');
+    } catch (error) {
+      console.error('Logout failed:', error);
+    }
+  };
+
   const navItems = [
-    { id: 1, label: 'Home', icon: '🏠' },
-    { id: 2, label: 'Projects', icon: '📁' },
-    { id: 3, label: 'Instruments', icon: '🎸' },
-    { id: 4, label: 'Songs', icon: '🎵' },
-    { id: 5, label: 'Tunings', icon: '🎼' },
-    { id: 6, label: 'Settings', icon: '⚙️' },
-    { id: 7, label: 'Help', icon: '❓' },
+    { id: 1, label: 'Home', icon: '🏠', path: '/' },
+    { id: 2, label: 'Projects', icon: '📁', path: null },
+    { id: 3, label: 'Instruments', icon: '🎸', path: null },
+    { id: 4, label: 'Songs', icon: '🎵', path: null },
+    { id: 5, label: 'Tunings', icon: '🎼', path: null },
+    { id: 6, label: 'Settings', icon: '⚙️', path: null },
+    { id: 7, label: 'Help', icon: '❓', path: null },
   ];
 
   return (
@@ -38,8 +50,11 @@ const Navbar = () => {
             className="nav-item"
             title={item.label}
             onClick={() => {
-              // TODO: Add navigation logic
-              console.log(`Clicked: ${item.label}`);
+              if (item.path) {
+                navigate(item.path);
+              } else {
+                console.log(`Clicked: ${item.label}`);
+              }
             }}
           >
             <span className="nav-icon">{item.icon}</span>
@@ -67,14 +82,23 @@ const Navbar = () => {
         {accountMenuOpen && (
           <div className="account-menu">
             <button
-              className="logout-btn"
+              className="account-menu-item"
               onClick={() => {
-                // TODO: Add logout logic
-                console.log('Logout clicked');
-              }}
-            >
+                navigate('/myProfile');
+                setAccountMenuOpen(false);
+              }}>
+              <span className="nav-icon">👤</span>
+              {!isCollapsed && (
+                <span className="nav-label">My profile</span>
+              )}
+            </button>
+            <button
+              className="logout-btn"
+              onClick={handleLogout}>
               <span className="nav-icon">🚪</span>
-              {!isCollapsed && <span className="nav-label">Logout</span>}
+              {!isCollapsed && (
+                <span className="nav-label">Logout</span>
+              )}
             </button>
           </div>
         )}

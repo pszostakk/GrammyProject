@@ -1,0 +1,31 @@
+.app-layout {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Right side: SearchTab + page content */
+.layout-right {
+  position: absolute;
+  left: 260px;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-color: #fff;
+}
+
+/* Page content */
+.layout-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 32px;
+  background-color: #1e213a;
+  overflow: hidden;
+  align-items: center;
+  justify-content: center;
+}
