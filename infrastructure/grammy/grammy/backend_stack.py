@@ -10,9 +10,10 @@ from aws_cdk import (
     aws_iam as iam,
 )
 from constructs import Construct
-from .config import PROJECT_NAME, HANDLERS, ROUTES, CLOUDFRONT_DOMAIN
-from .handlers import create_lambda_function
+from .config import BACKEND, PROJECT_NAME, HANDLERS, ROUTES, CLOUDFRONT_DOMAIN
+from .handlers import HandlerConfig, create_lambda_function
 from .api_routes import create_api_routes, RouteConfig
+import os
 
 
 class BackendStack(Stack):
@@ -55,6 +56,22 @@ class BackendStack(Stack):
             access_token_validity=Duration.hours(1),
             refresh_token_validity=Duration.hours(1),
             enable_token_revocation=True,
+        )
+
+        self.custom_message_lambda = create_lambda_function(
+            self,
+            HandlerConfig(
+                name="CognitoCustomMessageHandler",
+                function_name="cognito-custom-message-handler",
+                code_path=os.path.join(BACKEND, "auth"),
+                handler="handler.main",
+            ),
+            PROJECT_NAME,
+        )
+
+        self.user_pool.add_trigger(
+            cognito.UserPoolOperation.CUSTOM_MESSAGE,
+            self.custom_message_lambda,
         )
 
         # ───────────── API Gateway ─────────────

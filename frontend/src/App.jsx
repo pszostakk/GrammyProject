@@ -5,6 +5,7 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import LoginPage from './pages/LoginPage/LoginPage.jsx'
 import HomePage from './pages/HomePage/HomePage.jsx'
+import VerifyPage from './pages/VerifyPage/VerifyPage.jsx'
 import { getIdToken } from './auth/authService.js'
 import ProtectedRoute from './auth/protectedRoute.jsx'
 
@@ -16,6 +17,10 @@ function App() {
         element={
           <LoginPage />
         } 
+      />
+      <Route
+        path="/verifyPage" 
+        element={<VerifyPage />} 
       />
       <Route
         path="/"
