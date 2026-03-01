@@ -25,8 +25,8 @@ const SearchTab = () => {
 
   return (
     <div className="search-tab">
-      {/* Top row: Logo, Search, Notification, Avatar */}
       <div className="search-tab-header">
+
         {/* Logo */}
         <div className="logo-container">
           <img
@@ -37,62 +37,65 @@ const SearchTab = () => {
           />
         </div>
 
-        {/* Search Bar */}
+        {/* Center: Search Bar + Action Buttons */}
         <div className="search-bar-container">
-          <input
-            type="text"
-            className="search-bar"
-            placeholder="Search..."
-            value={searchQuery}
-            onChange={handleSearchChange}
-          />
+          <div className="search-bar-wrapper">
+            <span className="search-icon">🔍</span>
+            <input
+              type="text"
+              className="search-bar"
+              placeholder="Search..."
+              value={searchQuery}
+              onChange={handleSearchChange}
+            />
+          </div>
+          <div className="search-tab-actions">
+            <button className="action-btn">Button 1</button>
+            <button className="action-btn">Button 2</button>
+            <button className="action-btn">Button 3</button>
+            <button className="action-btn">Button 4</button>
+          </div>
         </div>
 
-        {/* Notification Icon */}
-        <div className="notification-container">
-          <button
-            className="notification-btn"
-            onClick={handleNotificationClick}
-            title="Notifications"
-          >
-            🔔
-          </button>
-          {showNotifications && (
-            <div className="notifications-window">
-              <div className="notifications-header">
-                <h3>Notifications</h3>
-                <button
-                  className="close-btn"
-                  onClick={() => setShowNotifications(false)}
-                >
-                  ✕
-                </button>
+        {/* Right: Notification + Avatar */}
+        <div className="search-tab-right-actions">
+          <div className="notification-container">
+            <button
+              className="notification-btn"
+              onClick={handleNotificationClick}
+              title="Notifications"
+            >
+              🔔
+            </button>
+            {showNotifications && (
+              <div className="notifications-window">
+                <div className="notifications-header">
+                  <h3>Notifications</h3>
+                  <button
+                    className="close-btn"
+                    onClick={() => setShowNotifications(false)}
+                  >
+                    ✕
+                  </button>
+                </div>
+                <div className="notifications-content">
+                  <p>No notifications yet</p>
+                </div>
               </div>
-              <div className="notifications-content">
-                <p>No notifications yet</p>
-              </div>
-            </div>
-          )}
+            )}
+          </div>
+
+          <div className="avatar-container">
+            <button
+              className="avatar-btn"
+              onClick={handleAvatarClick}
+              title="My Profile"
+            >
+              👤
+            </button>
+          </div>
         </div>
 
-        {/* Avatar Icon */}
-        <div className="avatar-container">
-          <button
-            className="avatar-btn"
-            onClick={handleAvatarClick}
-            title="My Profile"
-          >
-            👤
-          </button>
-        </div>
-      </div>
-
-      {/* Bottom row: Four action buttons */}
-      <div className="search-tab-actions">
-        <button className="action-btn">Button 1</button>
-        <button className="action-btn">Button 2</button>
-        <button className="action-btn">Button 3</button>
-        <button className="action-btn">Button 4</button>
       </div>
     </div>
   );
