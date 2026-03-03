@@ -123,6 +123,31 @@ HANDLERS: List[HandlerConfig] = [
         function_name="tunings-delete-handler",
         code_path=os.path.join(BACKEND, "tunings/delete"),
     ),
+    HandlerConfig(
+        name="UsersGetHandler",
+        function_name="users-get-handler",
+        code_path=os.path.join(BACKEND, "users/get"),
+    ),
+    HandlerConfig(
+        name="UsersGetIdHandler",
+        function_name="users-get-id-handler",
+        code_path=os.path.join(BACKEND, "users/get_id"),
+    ),
+    HandlerConfig(
+        name="UsersPostHandler",
+        function_name="users-post-handler",
+        code_path=os.path.join(BACKEND, "users/post"),
+    ),
+    HandlerConfig(
+        name="UsersPutHandler",
+        function_name="users-put-handler",
+        code_path=os.path.join(BACKEND, "users/put"),
+    ),
+    HandlerConfig(
+        name="UsersDeleteHandler",
+        function_name="users-delete-handler",
+        code_path=os.path.join(BACKEND, "users/delete"),
+    ),
 ]
 
 # API routes - list of route definitions supporting different HTTP methods
@@ -149,4 +174,9 @@ ROUTES: List[Dict[str, str]] = [
     {"path": "tunings", "handler": "TuningsPostHandler", "method": "POST"},
     {"path": "tunings", "handler": "TuningsPutHandler", "method": "PUT"},
     {"path": "tunings", "handler": "TuningsDeleteHandler", "method": "DELETE"},
+    {'path': "users", "handler": "UsersGetHandler", "method": "GET"},
+    {'path': "users/{id}", "handler": "UsersGetIdHandler", "method": "GET"},
+    {'path': "users", "handler": "UsersPostHandler", "method": "POST"},
+    {'path': "users", "handler": "UsersPutHandler", "method": "PUT"},
+    {'path': "users", "handler": "UsersDeleteHandler", "method": "DELETE"},
 ]
