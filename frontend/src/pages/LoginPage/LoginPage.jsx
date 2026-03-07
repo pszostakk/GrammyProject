@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { QRCodeSVG } from 'qrcode.react'
 import {
   loginUser,
@@ -12,6 +12,8 @@ import './LoginPage.css'
 
 export default function LoginPage() {
   const [isRegister, setIsRegister] = useState(false)
+  const [panelActive, setPanelActive] = useState(false)  // for animation
+  const leftRef = useRef()
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -194,7 +196,7 @@ export default function LoginPage() {
 
   return (
     <div className="login-wrapper">
-      <div className={`login-container ${isRegister ? 'right-panel-active' : ''} ${mfaStage === 'totpSetup' ? 'mfa-setup-mode' : ''}`}>
+      <div className={`login-container ${panelActive ? 'right-panel-active' : ''} ${mfaStage === 'totpSetup' ? 'mfa-setup-mode' : ''}`}>
 
         {/* ---------------- RIGHT PANEL (FORM SIDE) ---------------- */}
         <div className="login-right">
@@ -408,7 +410,7 @@ export default function LoginPage() {
         </div>
 
         {/* ---------------- LEFT PANEL (INFO SIDE) ---------------- */}
-        <div className="login-left">
+        <div className="login-left" ref={leftRef}>
           <h1>{isRegister ? 'GRAMMY REGISTER' : 'GRAMMY LOGIN'}</h1>
           <p>
             {isRegister
@@ -418,24 +420,29 @@ export default function LoginPage() {
           <button
           className="toggle-button"
           onClick={() => {
-            setIsRegister(!isRegister)
+            const newPanelActive = !panelActive
+            setPanelActive(newPanelActive)
+            
+            // Reset other states immediately
             setMfaStage(null)
             setQrUri('')
             setMfaCode('')
             setDeviceName('')
             setRememberDevice(false)
-
             setResetStage(false)
             setVerificationCode('')
-
             setEmailVerificationStage(null)
             setVerificationEmailCode('')
-
             setEmail('')
             setPassword('')
             setRepeatPassword('')
             setNewPassword('')
             setConfirmPassword('')
+            
+            // Update content mid-animation (300ms into 1s transition)
+            setTimeout(() => {
+              setIsRegister(newPanelActive)
+            }, 300)
           }}
         >
           {isRegister ? 'LOGIN' : 'REGISTER'}

@@ -1,0 +1,28 @@
+:root {
+  /* typography */
+  --font-family: "Montserrat", system-ui, -apple-system, sans-serif;
+
+  /* custom palette from user */
+  --color-background: #222831;          /* dark grey/black */
+  --color-secondary: #393E46;           /* slightly lighter grey */
+  --color-accent: #B55400;              /* orange */
+  --color-text: #EEEEEE;                /* light text */
+
+  /* additional semantic/utility*/
+  --color-primary: var(--color-accent);
+  --color-primary-hover: #a04800;
+  --color-background-light: #ffffff;
+  --color-text-dark: #213547;
+  --color-muted: #888;
+  --color-border: #393E46;
+}
+
+/* light theme overrides */
+/* @media (prefers-color-scheme: light) {
+  :root {
+    --color-background: #ffffff;
+    --color-text: #213547;
+    --color-primary-hover: #d18b00;
+    --color-border: #f9f9f9;
+  }
+} */

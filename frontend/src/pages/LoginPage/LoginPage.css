@@ -1,11 +1,22 @@
 body {
   margin: 0;
-  background: #1C2541;
-  font-family: system-ui, sans-serif;
+  background-image: url('../../assets/background.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  font-family: var(--font-family);
 }
 
 h2{
-    color: black;
+    color: var(--color-text);
+}
+
+#root {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 0px;
 }
 
 .login-wrapper {
@@ -20,7 +31,7 @@ h2{
   width: 900px;
   min-height: 520px;
   max-height: 90vh;
-  background: white;
+  background: var(--color-background);
   border-radius: 20px;
   overflow: hidden;
   box-shadow: 0 20px 50px rgba(0,0,0,.4);
@@ -45,7 +56,7 @@ h2{
 
 .login-left {
   left: 0;
-  background: linear-gradient(135deg,#6366f1,#8b5cf6);
+  background: linear-gradient(135deg, var(--color-secondary), var(--color-background));
   color: white;
   flex-direction: column;
   text-align: center;
@@ -63,7 +74,7 @@ h2{
 
 .login-right {
   right: 0;
-  background: #f5f5f5;
+  background: var(--color-background);
   z-index: 1;
 }
 
@@ -78,8 +89,8 @@ h2{
   padding: 12px;
   margin-bottom: 15px;
   border: none;
-  background: #e6e6e6;
-  color: #000;
+  background: var(--color-secondary);
+  color: var(--color-text);
   border-radius: 8px;
 }
 
@@ -87,8 +98,8 @@ h2{
   padding: 12px;
   border-radius: 25px;
   border: none;
-  background: #26b5a3;
-  color: white;
+  background: var(--color-accent);
+  color: var(--color-text);
   font-weight: bold;
   cursor: pointer;
 }
@@ -145,12 +156,12 @@ h2{
 .auth-block p {
   margin: 5px 0 15px 0;
   font-size: 14px;
-  color: #666;
+  color: var(--color-muted);
 }
 
 .auth-block .sub-text {
   font-size: 12px;
-  color: #999;
+  color: var(--color-muted);
   margin: 10px 0;
 }
 
@@ -175,23 +186,23 @@ h2{
   margin-top: 10px;
   padding: 12px;
   border-radius: 25px;
-  border: 2px solid #26b5a3;
+  border: 2px solid var(--color-accent);
   background: transparent;
-  color: #26b5a3;
+  color: var(--color-accent);
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s;
 }
 
 .back-button:hover {
-  background: #26b5a3;
-  color: white;
+  background: var(--color-accent);
+  color: var(--color-background);
 }
 
 .login-button:hover {
   opacity: 0.9;
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(38, 181, 163, 0.3);
+  box-shadow: 0 5px 15px rgba(181, 84, 0, 0.3);
 }
 
 .login-right input:focus {
